@@ -75,7 +75,7 @@ void RC_Loss_Alarm::process()
 
 	if (_was_armed && _had_manual_control && failsafe_flags.manual_control_signal_lost &&
 	    status.arming_state != vehicle_status_s::ARMING_STATE_ARMED) {
-		play_tune();
+		//play_tune();
 		_alarm_playing = true;
 
 	} else if (_alarm_playing) {

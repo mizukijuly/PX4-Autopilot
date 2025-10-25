@@ -34,6 +34,12 @@
 #include <px4_platform_common/events.h>
 #include "EKF2.hpp"
 
+
+// ======= TEST HACK: force local position valid for arming/testing =======
+// Uncomment to enable (temporary for bench testing only)
+//#define FORCE_ARM_WITHOUT_LOCAL_POS
+// ========================================================================
+
 using namespace time_literals;
 using math::constrain;
 using matrix::Eulerf;

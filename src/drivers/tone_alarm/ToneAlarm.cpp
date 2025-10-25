@@ -54,6 +54,7 @@ ToneAlarm::~ToneAlarm()
 
 bool ToneAlarm::Init()
 {
+	return false;
 	// NOTE: Implement hardware specific detail in the ToneAlarmInterface class implementation.
 	ToneAlarmInterface::init();
 
@@ -76,6 +77,7 @@ void ToneAlarm::InterruptStopNote(void *arg)
 
 void ToneAlarm::Run()
 {
+	return;
 	// Check if circuit breaker is enabled.
 	if (!_circuit_break_initialized) {
 		if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
@@ -97,6 +99,13 @@ void ToneAlarm::Run()
 
 		if (_tune_control_sub.copy(&tune_control)) {
 			if (tune_control.timestamp > 0) {
+
+				// ★ 起動音を無視する
+				if (tune_control.tune_id == tune_control_s::TUNE_ID_STARTUP) {
+				PX4_INFO("startup tune skipped");
+				return;
+				}
+
 				Tunes::ControlResult tune_result = _tunes.set_control(tune_control);
 
 				switch (tune_result) {
@@ -110,7 +119,7 @@ void ToneAlarm::Run()
 						hrt_cancel(&_hrt_call);
 					}
 
-					_play_tone = true;
+					//_play_tone = true;
 
 #if (!defined(TONE_ALARM_TIMER) && !defined(GPIO_TONE_ALARM_GPIO)) || defined(DEBUG_BUILD)
 
