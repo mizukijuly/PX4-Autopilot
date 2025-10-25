@@ -1588,12 +1588,21 @@ void EKF2::PublishLocalPosition(const hrt_abstime &timestamp)
 	lpos.ay = vel_deriv(1);
 	lpos.az = vel_deriv(2);
 
+#ifdef FORCE_ARM_WITHOUT_LOCAL_POS
+	// TEST/HACK: force local position valid flags for bench testing / arming without local position source
+	lpos.xy_valid = true;
+	lpos.v_xy_valid = true;
+	// TODO: if you want to only force horizontal or vertical independently, change these lines accordingly
+	lpos.z_valid = true;
+	lpos.v_z_valid = true;
+#else
 	lpos.xy_valid = _ekf.isLocalHorizontalPositionValid();
 	lpos.v_xy_valid = _ekf.isLocalHorizontalPositionValid();
 
 	// TODO: some modules (e.g.: mc_pos_control) don't handle v_z_valid != z_valid properly
 	lpos.z_valid = _ekf.isLocalVerticalPositionValid() || _ekf.isLocalVerticalVelocityValid();
 	lpos.v_z_valid = _ekf.isLocalVerticalVelocityValid() || _ekf.isLocalVerticalPositionValid();
+#endif
 
 	// Position of local NED origin in GPS / WGS84 frame
 	if (_ekf.global_origin_valid()) {
